@@ -8,6 +8,7 @@ from __future__ import print_function
 import odrive.core
 import time
 import math
+import json
 
 # Find a connected ODrive (this will block until you connect one)
 my_drive = odrive.core.find_any(consider_usb=True, consider_serial=False, printer=print)
@@ -31,11 +32,18 @@ my_drive.motor0.set_pos_setpoint(0.0, 0.0, 0.0)
 
 # A little sine wave to test
 t0 = time.monotonic()
+
+pos = {'time': [], 'pos': []}
+
 while True:
-    setpoint = 10000.0 * math.sin((time.monotonic() - t0)*2)
-    print("goto " + str(int(setpoint)))
-    my_drive.motor0.set_pos_setpoint(setpoint, 0.0, 0.0)
-    time.sleep(0.01)
+    setpoint = 20000.0 * math.sin((time.monotonic() - t0)*2)
+    # print("goto " + str(int(setpoint)))
+    my_drive.motor1.set_pos_setpoint(setpoint, 0.0, 0.0)
+
+    pos['time'].append(time.monotonic())
+    pos['pos'].append(my_drive.motor1.encoder.pll_pos)
+    # time.sleep(0.01)
+
 
 
 # Some more things you can try:
